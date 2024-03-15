@@ -3,9 +3,11 @@ import mongoose from "mongoose";
 import dotenv from "dotenv"
 // =============== Middleware ====================
 import userRoutes from "./routes/user_route.js"
+import authRoutes from "./routes/auth_route.js"
 
 const app = express()
 dotenv.config();
+app.use(express.json()) //its for to accept json
 
 
 
@@ -13,7 +15,7 @@ dotenv.config();
 
 
 app.use("/api/user", userRoutes)
-
+app.use("/api/auth", authRoutes)
 
 
 

@@ -8,6 +8,7 @@ import SignUp from "./pages/SignUp";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
+import FooterCom from "./components/Footer";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="signup" element={<SignUp />} />
         <Route path="dashboard" element={<Dashboard />} />
       </Routes>
+      <FooterCom/>
     </BrowserRouter>
   );
 }

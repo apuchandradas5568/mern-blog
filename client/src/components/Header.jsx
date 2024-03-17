@@ -4,10 +4,12 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { signOutSuccess } from "../redux/user/userSlice";
+import { signOutSuccess } from "../redux/user/userSlice.js";
+import { toggleTheme } from "../redux/theme/themeSlice.js";
 export default function Header() {
   const path = useLocation().pathname;
   const { currentUser } = useSelector((state) => state.user);
+  const {theme} = useSelector(state => state.theme)
   const dispatch = useDispatch()
 
 
@@ -41,7 +43,7 @@ const handleSignOut = async() =>{
     <div>
       <Navbar className="border-b-2">
         <Link to="/" className="bg-gray-200 font-semibold px-2 py-1 rounded-md">
-          <p>MERNB</p>
+          <p className="dark:text-black">MERNB</p>
         </Link>
         <form>
           <TextInput
@@ -55,8 +57,10 @@ const handleSignOut = async() =>{
           <AiOutlineSearch />
         </Button>
         <div className="flex gap-4 md:order-2">
-          <Button className="w-12 h-10 hidden sm:inline" color="gray" pill>
-            <FaMoon />
+          <Button className="w-12 h-10 hidden sm:inline" color="gray" pill
+            onClick={()=> dispatch(toggleTheme())}
+          >
+            {theme === 'light' ? <FaMoon/> : <FaSun/>}
           </Button>
           {currentUser ? (
               <Dropdown

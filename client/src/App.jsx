@@ -9,6 +9,7 @@ import SignUp from "./pages/SignUp";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import FooterCom from "./components/Footer";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
@@ -20,7 +21,9 @@ function App() {
         <Route path="sign-in" element={<SignIn />} />
         <Route path="projects" element={<Projects />} />
         <Route path="signup" element={<SignUp />} />
+        <Route element={<PrivateRoute/>}>
         <Route path="dashboard" element={<Dashboard />} />
+        </Route>
       </Routes>
       <FooterCom/>
     </BrowserRouter>

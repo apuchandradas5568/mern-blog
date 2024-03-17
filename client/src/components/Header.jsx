@@ -1,11 +1,42 @@
 import React from "react";
-import { Button, Navbar, TextInput } from "flowbite-react";
+import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon, FaSun } from "react-icons/fa";
-
+import { useDispatch, useSelector } from "react-redux";
+import { signOutSuccess } from "../redux/user/userSlice";
 export default function Header() {
-    const path = useLocation().pathname
+  const path = useLocation().pathname;
+  const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch()
+
+
+
+
+
+const handleSignOut = async() =>{
+  try {
+    const res  = await fetch('/api/user/signout', {
+      method: "POST"
+    })
+    const data = res.json()
+    if(!res.ok){
+      console.log(data.message);
+    }else{
+      dispatch(signOutSuccess())
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
+
+
+
+
+
+
   return (
     <div>
       <Navbar className="border-b-2">
@@ -27,11 +58,33 @@ export default function Header() {
           <Button className="w-12 h-10 hidden sm:inline" color="gray" pill>
             <FaMoon />
           </Button>
-          <Link to="sign-in">
-            <Button className="bg-gray-300" color="gray">
-              Sign In
-            </Button>
-          </Link>
+          {currentUser ? (
+              <Dropdown
+                arrowIcon = {false}
+                inline
+                label={
+                  <Avatar alt="user" img={currentUser.profilePicture} rounded />
+                }
+              >
+                <Dropdown.Header>
+                  <span className="block text-sm">@{currentUser.username}</span>
+                  <span className="block text-sm font-medium truncate">{currentUser.email}</span>
+                </Dropdown.Header>
+                <Link to={'/dashboard?tab=profile'}>
+                    <Dropdown.Item>
+                      Profile
+                    </Dropdown.Item>
+                </Link>
+                <Dropdown.Divider/>
+                <Dropdown.Item onClick={handleSignOut} >Sign Out</Dropdown.Item>
+              </Dropdown>
+          ) : (
+            <Link to="/sign-in">
+              <Button className="bg-gray-300" color="gray">
+                Sign In
+              </Button>
+            </Link>
+          )}
 
           <Navbar.Toggle />
         </div>

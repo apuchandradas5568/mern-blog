@@ -1,6 +1,7 @@
 import express from "express"
 import mongoose from "mongoose";
 import dotenv from "dotenv"
+import cookieParser from "cookie-parser";
 // =============== Middleware ====================
 import userRoutes from "./routes/user_route.js"
 import authRoutes from "./routes/auth_route.js"
@@ -8,7 +9,7 @@ import authRoutes from "./routes/auth_route.js"
 const app = express()
 dotenv.config();
 app.use(express.json()) //its for to accept json
-
+app.use(cookieParser())
 
 
 

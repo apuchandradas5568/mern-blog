@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 // =============== Middleware ====================
 import userRoutes from "./routes/user_route.js"
 import authRoutes from "./routes/auth_route.js"
+import postRoutes from './routes/post_route.js'
 
 const app = express()
 dotenv.config();
@@ -17,6 +18,7 @@ app.use(cookieParser())
 
 app.use("/api/user", userRoutes)
 app.use("/api/auth", authRoutes)
+app.use('/api/post', postRoutes)
 
 
 

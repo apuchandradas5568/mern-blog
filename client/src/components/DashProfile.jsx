@@ -7,7 +7,7 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/
 import { app } from "../firebase";
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { updateFailure, updateStart, updateSuccess } from "../redux/user/userSlice";
+import { deleteUserFailure, deleteUserStart, deleteUserSuccess, signOutSuccess, updateFailure, updateStart, updateSuccess } from "../redux/user/userSlice";
 
 
 
@@ -23,8 +23,8 @@ export default function DashProfile() {
   const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
   const [updateUserError, setUpdateUserError] = useState(null);
 
-
   const [showModal, setShowModal] = useState(false);
+
   const filePickerRef = useRef();
   const dispatch = useDispatch();
 
@@ -45,7 +45,7 @@ export default function DashProfile() {
   const uploadImage = async () => {
     setImageFileUploading(true);
     setImageFileUploadError(null);
-    
+
     const storage = getStorage(app);
     const fileName = new Date().getTime() + imageFile.name;
     const storageRef = ref(storage, fileName);
@@ -115,9 +115,36 @@ export default function DashProfile() {
     }
 
   };
-  const handleDeleteUser = async () => {};
+  const handleDeleteUser = async () => {
+    setShowModal(false)
+    try {
+      dispatch(deleteUserStart())
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: 'DELETE',
+      })
+      const data = await res.json()
+      if(!res.ok){
+        dispatch(deleteUserFailure(data.message))
+      } else{
+        dispatch(deleteUserSuccess(data))
+      }
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message))
+    }
+  };
 
-  const handleSignout = async () => {};
+  const handleSignout = async () => {
+    try {
+      const res = await  fetch('/api/user/signout', {method:'POST'})
+      const data = await res.json()
+
+      if(res.ok){
+        dispatch(signOutSuccess(data))
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <div className="max-w-lg mx-auto  p-3 w-full">

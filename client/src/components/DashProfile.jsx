@@ -7,7 +7,7 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/
 import { app } from "../firebase";
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { updateStart } from "../redux/user/userSlice";
+import { updateFailure, updateStart, updateSuccess } from "../redux/user/userSlice";
 
 
 
@@ -45,6 +45,7 @@ export default function DashProfile() {
   const uploadImage = async () => {
     setImageFileUploading(true);
     setImageFileUploadError(null);
+    
     const storage = getStorage(app);
     const fileName = new Date().getTime() + imageFile.name;
     const storageRef = ref(storage, fileName);
@@ -93,8 +94,24 @@ export default function DashProfile() {
 
     try {
       dispatch(updateStart())
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      })
+      const data = await res.json()
+      if(!res.ok){
+        dispatch(updateFailure(data.message))
+        setUpdateUserError(data.message)
+      } else{
+        dispatch(updateSuccess(data))
+        setUpdateUserSuccess("User's profile updated successfully")
+      }
     } catch (error) {
-      
+      dispatch(updateFailure(error.message))
+      setUpdateUserError(error.message)
     }
 
   };

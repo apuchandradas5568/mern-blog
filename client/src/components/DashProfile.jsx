@@ -3,13 +3,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, Modal, ModalBody, TextInput } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 import { app } from "../firebase";
-import { CircularProgressbar } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
-import { deleteUserFailure, deleteUserStart, deleteUserSuccess, signOutSuccess, updateFailure, updateStart, updateSuccess } from "../redux/user/userSlice";
-
-
+import { CircularProgressbar } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+import {
+  deleteUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  signOutSuccess,
+  updateFailure,
+  updateStart,
+  updateSuccess,
+} from "../redux/user/userSlice";
 
 export default function DashProfile() {
   const { currentUser, error, loading } = useSelector((state) => state.user);
@@ -53,93 +64,93 @@ export default function DashProfile() {
     uploadTask.on(
       "state_changed",
       (snapshot) => {
-        console.log(snapshot.bytesTransferred);
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setImageFileUploadProgress(progress.toFixed(0));
       },
       (error) => {
-        setImageFileUploadError('Could not upload image (File must be less than 2MB)')
-        setImageFileUploadProgress(null)
-        setImageFile(null)
-        setImageFileUrl(null)
-        setImageFileUploading(false)
+        setImageFileUploadError(
+          "Could not upload image (File must be less than 2MB)"
+        );
+        setImageFileUploadProgress(null);
+        setImageFile(null);
+        setImageFileUrl(null);
+        setImageFileUploading(false);
       },
-      ()=>{
+      () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setImageFileUrl(downloadURL)
-            setFormData({...formData, profilePicture: downloadURL})
-            setImageFileUploading(false)
-        })
+          setImageFileUrl(downloadURL);
+          setFormData({ ...formData, profilePicture: downloadURL });
+          setImageFileUploading(false);
+        });
       }
     );
   };
 
   const handleChange = (e) => {
-    setFormData({...formData, [e.target.id] : e.target.value})
+    setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setUpdateUserError(null)
-    setUpdateUserSuccess(null)
-    if(Object.keys(formData).length === 0){
-      setUpdateUserError('No changes made')
-      return
+    setUpdateUserError(null);
+    setUpdateUserSuccess(null);
+    if (Object.keys(formData).length === 0) {
+      setUpdateUserError("No changes made");
+      return;
     }
-    if(imageFileUploading){
-      setImageFileUploadError('Please wait for the image to upload')
-      return
+    if (imageFileUploading) {
+      setImageFileUploadError("Please wait for the image to upload");
+      return;
     }
 
     try {
-      dispatch(updateStart())
+      dispatch(updateStart());
       const res = await fetch(`/api/user/update/${currentUser._id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData)
-      })
-      const data = await res.json()
-      if(!res.ok){
-        dispatch(updateFailure(data.message))
-        setUpdateUserError(data.message)
-      } else{
-        dispatch(updateSuccess(data))
-        setUpdateUserSuccess("User's profile updated successfully")
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        dispatch(updateFailure(data.message));
+        setUpdateUserError(data.message);
+      } else {
+        dispatch(updateSuccess(data));
+        setUpdateUserSuccess("User's profile updated successfully");
       }
     } catch (error) {
-      dispatch(updateFailure(error.message))
-      setUpdateUserError(error.message)
+      dispatch(updateFailure(error.message));
+      setUpdateUserError(error.message);
     }
-
   };
   const handleDeleteUser = async () => {
-    setShowModal(false)
+    setShowModal(false);
     try {
-      dispatch(deleteUserStart())
+      dispatch(deleteUserStart());
       const res = await fetch(`/api/user/delete/${currentUser._id}`, {
-        method: 'DELETE',
-      })
-      const data = await res.json()
-      if(!res.ok){
-        dispatch(deleteUserFailure(data.message))
-      } else{
-        dispatch(deleteUserSuccess(data))
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        dispatch(deleteUserFailure(data.message));
+      } else {
+        dispatch(deleteUserSuccess(data));
       }
     } catch (error) {
-      dispatch(deleteUserFailure(error.message))
+      dispatch(deleteUserFailure(error.message));
     }
   };
 
   const handleSignout = async () => {
     try {
-      const res = await  fetch('/api/user/signout', {method:'POST'})
-      const data = await res.json()
+      const res = await fetch("/api/user/signout", { method: "POST" });
+      const data = await res.json();
 
-      if(res.ok){
-        dispatch(signOutSuccess(data))
+      if (res.ok) {
+        dispatch(signOutSuccess(data));
       }
     } catch (error) {
       console.log(error.message);

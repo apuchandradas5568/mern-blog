@@ -10,6 +10,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import FooterCom from "./components/Footer";
 import PrivateRoute from "./components/PrivateRoute";
+import CreatePost from "./pages/CreatePost";
 
 function App() {
   return (
@@ -23,6 +24,9 @@ function App() {
         <Route path="signup" element={<SignUp />} />
         <Route element={<PrivateRoute/>}>
         <Route path="dashboard" element={<Dashboard />} />
+        </Route>
+        <Route element={<PrivateRoute/>}>
+        <Route path="create-post" element={<CreatePost />} />
         </Route>
       </Routes>
       <FooterCom/>

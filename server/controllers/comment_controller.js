@@ -30,20 +30,22 @@ export const getPostComments = async (req,res,next ) =>{
 
 export const likeComment = async (req,res,next ) => {
     try {
-        const comment = await Comment.find(req.params.commentId)
+        const comment = await Comment.findById(req.params.commentId)
         if(!comment) {
             return next(errorHandler(404, 'Commment not Found'))
         }
-        const userIndex = comment.likes.indexOf(req.user.id)
-        console.log(userIndex);
 
-        if(userIndex === -1) {
-            comment.numberOfLikes +=1;
-            comment.likes.push(req.user.Id)
-        } else {
+        // Check if the user has already liked the comment
+        const userLiked = comment.likes.some(userId => userId.toString() === req.user.id)
+
+        if(userLiked) {
             comment.numberOfLikes -=1;
-            comment.likes.splice(userIndex, 1)
+            comment.likes = comment.likes.filter(userId => userId.toString() !== req.user.id)
+        } else {
+            comment.numberOfLikes +=1;
+            comment.likes.push(req.user.id)
         }
+
         await comment.save()
         res.status(200).json(comment)
     } catch (error) {
@@ -71,7 +73,7 @@ export const editComment = async(req,res,next ) =>{
 
 export const deleteComment = async (req,res,next) =>{
     try {
-        const comment = await Comment.find(req.params.commentId)
+        const comment = await Comment.findById(req.params.commentId)
         if(!comment) {
             return next(errorHandler(404, 'comment not found'))
         }

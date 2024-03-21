@@ -2,6 +2,7 @@ import express from "express"
 import mongoose from "mongoose";
 import dotenv from "dotenv"
 import cookieParser from "cookie-parser";
+import path from 'path'
 // =============== Middleware ====================
 import userRoutes from "./routes/user_route.js"
 import authRoutes from "./routes/auth_route.js"
@@ -14,8 +15,12 @@ dotenv.config();
 app.use(express.json()) //its for to accept json
 app.use(cookieParser())
 
+const __dirname = path.resolve()
+app.use(express.static(path.join(__dirname, '/client/dist')))
 
-
+app.get('*', (req,res) =>{
+    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'))
+})
 
 
 app.use("/api/user", userRoutes)

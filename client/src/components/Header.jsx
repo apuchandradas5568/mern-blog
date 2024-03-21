@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
@@ -12,6 +12,28 @@ export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme);
   const dispatch = useDispatch();
+  const [searchTerm, setSearchTerm ] = useState('')
+  const navigate = useNavigate()
+
+  const location = useLocation()
+
+  useEffect(()=>{
+    const urlParams = new URLSearchParams(location.search)
+    const searchTermFromUrl = urlParams.get('searchTerm')
+
+    if(searchTermFromUrl) {
+      setSearchTerm(searchTermFromUrl)
+    }
+
+  },[location.search]);
+
+const handleSubmit = (e) =>{
+  e.preventDefault()
+  const urlParams = new URLSearchParams(location.search)
+  urlParams.set("searchTerm", searchTerm)
+  const searchQuery = urlParams.toString()
+  navigate(`/search?${searchQuery}`)
+}
 
   const handleSignout = async () => {
     try {
@@ -32,7 +54,7 @@ export default function Header() {
         <Link to="/" className="bg-gray-200 font-semibold px-2 py-1 rounded-md">
           <p className="dark:text-black">MERNB</p>
         </Link>
-        <form>
+        <form onSubmit={handleSubmit}>
           <TextInput
             type="text"
             placeholder="Search..."

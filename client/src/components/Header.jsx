@@ -10,12 +10,8 @@ import { toggleTheme } from "../redux/theme/themeSlice.js";
 export default function Header() {
   const path = useLocation().pathname;
   const { currentUser } = useSelector((state) => state.user);
-  const {theme} = useSelector(state => state.theme)
-  const dispatch = useDispatch()
-
-
-
-
+  const { theme } = useSelector((state) => state.theme);
+  const dispatch = useDispatch();
 
   const handleSignout = async () => {
     try {
@@ -29,12 +25,6 @@ export default function Header() {
       console.log(error.message);
     }
   };
-
-
-
-
-
-
 
   return (
     <div>
@@ -54,31 +44,39 @@ export default function Header() {
           <AiOutlineSearch />
         </Button>
         <div className="flex gap-4 md:order-2">
-          <Button className="w-12 h-10 hidden sm:inline" color="gray" pill
-            onClick={()=> dispatch(toggleTheme())}
+          <Button
+            className="w-12 h-10 hidden sm:inline"
+            color="gray"
+            pill
+            onClick={() => dispatch(toggleTheme())}
           >
-            {theme === 'light' ? <FaMoon/> : <FaSun/>}
+            {theme === "light" ? <FaMoon /> : <FaSun />}
           </Button>
           {currentUser ? (
-              <Dropdown
-                arrowIcon = {false}
-                inline
-                label={
-                  <Avatar alt="user" img={currentUser.profilePicture} rounded />
-                }
-              >
-                <Dropdown.Header>
-                  <span className="block text-sm">@{currentUser.username}</span>
-                  <span className="block text-sm font-medium truncate">{currentUser.email}</span>
-                </Dropdown.Header>
-                <Link to={'/dashboard?tab=profile'}>
-                    <Dropdown.Item>
-                      Profile
-                    </Dropdown.Item>
+            <Dropdown
+              arrowIcon={false}
+              inline
+              label={
+                <Avatar alt="user" img={currentUser.profilePicture} rounded />
+              }
+            >
+              <Dropdown.Header>
+                <span className="block text-sm">@{currentUser.username}</span>
+                <span className="block text-sm font-medium truncate">
+                  {currentUser.email}
+                </span>
+              </Dropdown.Header>
+              {currentUser.isAdmin && (
+                <Link to={"/dashboard?tab=dash"}>
+                  <Dropdown.Item>Dashboard</Dropdown.Item>
                 </Link>
-                <Dropdown.Divider/>
-                <Dropdown.Item onClick={handleSignout} >Sign Out</Dropdown.Item>
-              </Dropdown>
+              )}
+              <Link to={"/dashboard?tab=profile"}>
+                <Dropdown.Item>Profile</Dropdown.Item>
+              </Link>
+              <Dropdown.Divider />
+              <Dropdown.Item onClick={handleSignout}>Sign Out</Dropdown.Item>
+            </Dropdown>
           ) : (
             <Link to="/sign-in">
               <Button className="bg-gray-300" color="gray">

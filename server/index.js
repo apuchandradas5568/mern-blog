@@ -15,12 +15,12 @@ dotenv.config();
 app.use(express.json()) //its for to accept json
 app.use(cookieParser())
 
-const __dirname = path.resolve()
-app.use(express.static(path.join(__dirname, '/client/dist')))
+// const __dirname = path.resolve()
+// app.use(express.static(path.join(__dirname, '/client/dist')))
 
-app.get('*', (req,res) =>{
-    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'))
-})
+// app.get('*', (req,res) =>{
+//     res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'))
+// })
 
 
 app.use("/api/user", userRoutes)

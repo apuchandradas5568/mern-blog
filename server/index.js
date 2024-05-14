@@ -12,15 +12,16 @@ import commentRoutes from './routes/comment_route.js'
 
 const app = express()
 dotenv.config();
+
 app.use(express.json()) //its for to accept json
 app.use(cookieParser())
 
-// const __dirname = path.resolve()
-// app.use(express.static(path.join(__dirname, '/client/dist')))
+const __dirname = path.resolve()
+app.use(express.static(path.join(__dirname, '/client/dist')))
 
-// app.get('*', (req,res) =>{
-//     res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'))
-// })
+app.get('*', (req,res) =>{
+    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'))
+})
 
 
 app.use("/api/user", userRoutes)
@@ -31,16 +32,8 @@ app.use('/api/comment', commentRoutes)
 
 
 
-
-
-
-
-
-
-
-
 app.listen(3000, ()=>{
-    mongoose.connect(process.env.MONGO_URI)
+    mongoose.connect("mongodb+srv://ariyanavra:Apu1234567@cluster0.q1s8yo1.mongodb.net/mern-blog?retryWrites=true&w=majority&appName=Cluster0")
     .then(()=>{
         console.log("database connected");
         console.log('server is running !!!');

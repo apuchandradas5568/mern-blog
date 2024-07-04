@@ -1,4 +1,3 @@
-# Sociopedia
 
 MERN Blog is a full-fledged blog application developed using the MERN stack (MongoDB, Express.js, React, and Node.js). This project includes both the client and server sides in a single repository.
 
